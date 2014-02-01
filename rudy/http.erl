@@ -1,17 +1,13 @@
 -module(http).
 -export([parse_request/1, ok/1, get/1]).
 
+% parse HTTP GET request
+
 parse_request(R0) ->
   {Request, R1} = request_line(R0),
   {Headers, R2} = headers(R1),
   {Body, _} = message_body(R2),
   {Request, Headers, Body}.
-
-ok(Body) ->
-  "HTTP/1.1 200 OK\r\n" ++ "\r\n" ++ Body.
-
-get(URI) ->
-  "GET " ++ URI ++ " HTTP/1.1\r\n" ++ "\r\n".
 
 request_line([$G, $E, $T, 32 | R0]) ->
   {URI, R1} = request_uri(R0),
@@ -48,4 +44,12 @@ header([C|R0], Acc) ->
 
 message_body(R) ->
   {R, []}.
+
+% 200 reply
+
+ok(Body) ->
+  "HTTP/1.1 200 OK\r\n" ++ "\r\n" ++ Body.
+
+get(URI) ->
+  "GET " ++ URI ++ " HTTP/1.1\r\n" ++ "\r\n".
 
